@@ -1,0 +1,174 @@
+<!--
+ * @Author       : Lucifer
+ * @Date         : 2022-11-13 15:06:43
+ * @LastEditTime : 2022-11-16 08:22:56
+ * @FilePath     : \personal\app\admin\view\lmessage\index.html
+-->
+{include file='public/header'/}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <header class="card-header">
+                <div class="card-title">编程语言列表</div>
+            </header>
+            <div class="card-body">
+                <div class="alert alert-success" role="alert">
+                    一般不建议存在超过六个，最好是四个排列方式更好
+                </div>
+                <div id="toolbar" class="toolbar-btn-action">
+                    <button id="btn_add" type="button" class="btn btn-primary m-r-5" data-toggle="modal"
+                        data-target="#exampleModal">
+                        <span class="mdi mdi-plus" aria-hidden="true"></span>新增
+                    </button>
+                    <button id="btn_delete" type="button" class="btn btn-danger">
+                        <span class="mdi mdi-window-close" aria-hidden="true"></span>删除
+                    </button>
+                </div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="exampleModalLabel">模态框标题</h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group col-md-12">
+                                    <label for="seo_keywords">编程语言</label>
+                                    <input type="text" class="form-control" id="seo_keywords" name="title" value=""
+                                        placeholder="请输入内容" />
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="seo_keywords">掌握程度</label>
+                                    <input type="text" class="form-control" id="seo_keywords" name="name" value=""
+                                        placeholder="请输入内容" />
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="seo_keywords">颜色</label>
+                                    <select class="form-control" id="color" name="color">
+                                        <option value="bg-primary">蓝色</option>
+                                        <option value="bg-danger">红色</option>
+                                        <option value="bg-warning">黄色</option>
+                                        <option value="bg-info">淡蓝</option>
+                                        <option value="bg-success">绿色</option>
+                                        <option value="bg-dark">黑色</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                <button type="button" id="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="tb_departments"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{include file='public/footer'/}
+<script type="text/javascript">
+    $('#tb_departments').bootstrapTable({
+        classes: 'table table-bordered table-hover table-striped',
+        url: '../../admin/lmessage/create',
+        method: 'get',
+        dataType: 'json',        // 因为本示例中是跨域的调用,所以涉及到ajax都采用jsonp,
+        uniqueId: 'id',
+        idField: 'id',             // 每行的唯一标识字段
+        toolbar: '#toolbar',       // 工具按钮容器
+        clickToSelect: true,     // 是否启用点击选中行
+        showColumns: true,         // 是否显示所有的列
+        showRefresh: true,         // 是否显示刷新按钮
+
+        showToggle: true,        // 是否显示详细视图和列表视图的切换按钮(clickToSelect同时设置为true时点击会报错)
+
+        pagination: true,                    // 是否显示分页
+        sortOrder: "desc",                    // 排序方式
+        queryParams: function (params) {
+            var temp = {
+                limit: params.limit,         // 每页数据量
+                offset: params.offset,       // sql语句起始索引
+                page: (params.offset / params.limit) + 1,
+                sort: params.sort,           // 排序的列名
+                sortOrder: params.order      // 排序方式'asc' 'desc'
+            };
+            return temp;
+        },                                   // 传递参数
+        sidePagination: "server",            // 分页方式：client客户端分页，server服务端分页
+        pageNumber: 1,                       // 初始化加载第一页，默认第一页
+        pageSize: 10,                        // 每页的记录行数
+        pageList: [10, 25, 50, 100],         // 可供选择的每页的行数
+        search: true,                      // 是否显示表格搜索，此搜索是客户端搜索
+
+        //showExport: true,        // 是否显示导出按钮, 导出功能需要导出插件支持(tableexport.min.js)
+        //exportDataType: "basic", // 导出数据类型, 'basic':当前页, 'all':所有数据, 'selected':选中的数据
+
+        columns: [{
+            field: 'example',
+            checkbox: true    // 是否显示复选框
+        }, {
+            field: 'id',
+            title: 'ID',
+            sortable: true    // 是否排序
+        }, {
+            field: 'name',
+            title: '名字'
+        }, {
+            field: 'content',
+            title: '内容',
+        }, {
+            field: 'mail',
+            title: '邮箱',
+        }, {
+            field: 'ip',
+            title: 'IP',
+        }, {
+            field: 'create_time',
+            title: '时间',
+        }, {
+            field: 'operate',
+            title: '操作',
+            formatter: btnGroup,  // 自定义方法
+            events: {
+                'click .del-btn': function (event, value, row, index) {
+                    delUser(row.id);
+                }
+            }
+        }],
+        onLoadSuccess: function (data) {
+            $("[data-toggle='tooltip']").tooltip();
+        }
+    });
+
+    // 操作按钮
+    function btnGroup() {
+        let html =
+            '<a href="#!" class="btn btn-xs btn-default del-btn" title="删除" data-toggle="tooltip"><i class="mdi mdi-window-close"></i></a>';
+        return html;
+    }
+
+    // 操作方法 - 删除
+    function delUser(id) {
+        del(id);
+        // alert('信息删除成功' + id);
+    }
+
+    function del(id) {
+        $.post("{:url('delete')}", {
+            id: id,
+        }, function (res) {
+            if (res.code == 200) {
+                showNotify('添加成功~', 'success');
+            } else {
+                showNotify(res.msg, 'danger');
+            }
+        }, 'json')
+    }
+</script>

@@ -1,0 +1,138 @@
+<!--
+ * @Author       : Lucifer
+ * @Date         : 2022-11-13 17:14:15
+ * @LastEditTime : 2022-11-16 11:03:48
+ * @FilePath     : \personal\app\admin\view\login\index.html
+-->
+
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta name="keywords" content="LightYear,LightYearAdmin,光年,后台模板,后台管理系统,光年HTML模板">
+  <meta name="description" content="Light Year Admin V4是一个基于Bootstrap v4.4.1的后台管理系统的HTML模板。">
+  <meta name="author" content="yinq">
+  <title>苏小林 - Personal Console</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../../static/admin/favicon.ico">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-touch-fullscreen" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" type="text/css" href="../../static/admin/css/materialdesignicons.min.css">
+  <link rel="stylesheet" type="text/css" href="../../static/admin/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../../static/admin/css/animate.min.css">
+  <link rel="stylesheet" type="text/css" href="../../static/admin/css/style.min.css">
+  <style>
+    .login-form .has-feedback {
+      position: relative;
+    }
+
+    .login-form .has-feedback .form-control {
+      padding-left: 36px;
+    }
+
+    .login-form .has-feedback .mdi {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: auto;
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      z-index: 4;
+      color: #dcdcdc;
+      display: block;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .login-form .has-feedback.row .mdi {
+      left: 15px;
+    }
+  </style>
+</head>
+
+<body class="center-vh"
+  style="background-image: url(../../static/admin/images/login-bg-2.jpg); background-size: cover;">
+  <!--页面loading-->
+  <div id="lyear-preloader" class="loading">
+    <div class="ctn-preloader">
+      <div class="round_spinner">
+        <div class="spinner"></div>
+        <img src="../../static/admin/images/loading-logo.png" alt="">
+      </div>
+    </div>
+  </div>
+  <!--页面loading end-->
+  <div class="card card-shadowed p-5 w-420 mb-0 mr-2 ml-2">
+    <div class="text-center mb-3">
+      <a href="index.html"> <img alt="light year admin" src="../../static/admin/images/logo-sidebar.png"> </a>
+    </div>
+
+    <form action="#!" method="post" class="login-form">
+      <div class="form-group has-feedback">
+        <span class="mdi mdi-account" aria-hidden="true"></span>
+        <input type="text" class="form-control" name="username" id="username" placeholder="用户名">
+      </div>
+
+      <div class="form-group has-feedback">
+        <span class="mdi mdi-lock" aria-hidden="true"></span>
+        <input type="password" class="form-control" name="password" id="password" placeholder="密码">
+      </div>
+
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="rememberme">
+          <label class="custom-control-label not-user-select" for="rememberme">5天内自动登录</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-block btn-primary" type="button" onclick="login()">立即登录</button>
+      </div>
+    </form>
+
+    <p class="text-center text-muted mb-0">Copyright © 2020 <a href="http://yyyyyyy.ml" target="_blank">苏小林</a>. All
+      right reserved</p>
+  </div>
+
+  <script type="text/javascript" src="../../static/admin/js/jquery.min.js"></script>
+  <script type="text/javascript" src="../../static/admin/js/main.min.js"></script>
+
+  <script type="text/javascript" src="../../static/admin/js/bootstrap-notify.min.js"></script>
+  <script type="text/javascript" src="../../static/admin/js/app.min.js"></script>
+  <script type="text/javascript">;</script>
+  <!--消息提示-->
+  <script type="text/javascript" src="../../static/admin/js/lyear-loading.min.js"></script>
+
+  <script>
+    function login() {
+      var l = $('body').lyearloading({
+        opacity: 0.2,
+        spinnerSize: 'lg',
+        spinnerText: '后台处理中，请稍后...',
+        textColorClass: 'text-info',
+        spinnerColorClass: 'text-info'
+      });
+      var username = $("input[name='username']").val();
+      var password = $("input[name='password']").val();
+      $.post("{:url('logins')}", {
+        username, username,
+        password, password
+      }, function (res) {
+        if (res.code == 200 || res.auth.type == '登录') {
+          l.destroy();
+          showNotify('登录成功', 'success');
+          setTimeout("location.href='/admin/index'", 3000);
+        } else {
+          l.destroy();
+          showNotify('登录失败', 'danger');
+        }
+      }, 'json')
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!--
+ * @Author       : Lucifer
+ * @Date         : 2022-11-13 14:06:50
+ * @LastEditTime : 2022-11-13 14:55:05
+ * @FilePath     : \personal\app\admin\view\web\index.html
+-->
+{include file='public/header'/}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+
+                <form action="#!" method="post" class="row">
+                    <div class="form-group col-md-12">
+                        <label for="title">网站标题</label>
+                        <input type="text" class="form-control" id="title" name="title" value="" placeholder="请输入标题" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="seo_keywords">名字</label>
+                        <input type="text" class="form-control" id="seo_keywords" name="name" value=""
+                            placeholder="名字" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="seo_description">首页介绍</label>
+                        <input type="text" class="form-control" id="seo_keywords" name="main_introduce" value=""
+                            placeholder="建议一句话以内" />
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="seo_description">个人介绍</label>
+                        <textarea class="form-control" id="seo_description" name="personal_introduce" rows="5" value=""
+                            placeholder="介绍"></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="tags">开源</label>
+                        <textarea class="form-control" id="seo_description" name="source_introduce" rows="5" value=""
+                            placeholder="开源介绍"></textarea>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="sort">开源链接</label>
+                        <input type="text" class="form-control" id="sort" name="source_url" value="" />
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="sort">底部邮箱</label>
+                        <input type="text" class="form-control" id="sort" name="email" value="" />
+                    </div>
+                    <div class="form-group col-md-12">
+                        <button type="button" class="btn btn-primary" id="submit" target-form="add-form">确 定</button>
+                        <button type="button" class="btn btn-default"
+                            onclick="javascript:history.back(-1);return false;">返 回</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+{include file='public/footer'/}
+
+<script>
+    $("#submit").on('click', function () {
+        var title = $("input[name='title']").val();//1
+        var name = $("input[name='name']").val();//1
+        var main_introduce = $("input[name='main_introduce']").val();//1
+        var introduce = $("textarea[name='personal_introduce']").val();
+        var source_introduce = $("textarea[name='source_introduce']").val();//1
+        var source_url = $("input[name='source_url']").val();//1
+        var email = $("input[name='email']").val();
+        $.post("{:url('update')}", {
+            title: title,
+            name: name,
+            main_introduce: main_introduce,
+            introduce: introduce,
+            source_introduce: source_introduce,
+            source_url: source_url,
+            email: email
+        }, function (res) {
+            if (res.code == 200) {
+                showNotify('添加成功~', 'success');
+            } else {
+                showNotify(res.msg, 'danger');
+            }
+        }, 'json')
+    })
+</script>

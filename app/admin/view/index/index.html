@@ -1,0 +1,203 @@
+{include file='public/header'/}
+<!-- 
+重要事情说三遍
+重要事情说三遍
+重要事情说三遍
+不要对本文件进行格式化，一旦格式化导致有些语法错乱导致无法运行等问题的出现 
+-->
+<div class="row">
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body clearfix">
+                <div class="flex-box">
+                    <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-cryengine fs-22"></i></span>
+                    <span class="fs-22 lh-22">{$data.visit}</span>
+                </div>
+                <div class="text-right">访问人数</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body clearfix">
+                <div class="flex-box">
+                    <span class="img-avatar img-avatar-48 bg-translucent"><i
+                            class="mdi mdi-language-java fs-22"></i></span>
+                    <span class="fs-22 lh-22">{$data.language}</span>
+                </div>
+                <div class="text-right">编程语言</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-success text-white">
+            <div class="card-body clearfix">
+                <div class="flex-box">
+                    <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-pinterest fs-22"></i></span>
+                    <span class="fs-22 lh-22">{$data.hobby}</span>
+                </div>
+                <div class="text-right">兴趣爱好</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card bg-purple text-white">
+            <div class="card-body clearfix">
+                <div class="flex-box">
+                    <span class="img-avatar img-avatar-48 bg-translucent"><i
+                            class="mdi mdi-comment-outline fs-22"></i></span>
+                    <span class="fs-22 lh-22">{$data.msg}</span>
+                </div>
+                <div class="text-right">留言总数</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">每周留言</div>
+            </div>
+            <div class="card-body">
+                <canvas class="js-chartjs-bars"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">每周访问</div>
+            </div>
+            <div class="card-body">
+                <canvas class="js-chartjs-lines"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">系统信息</div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered text-center">
+                    <tbody>
+                        <tr>
+                            <td>系统版本</td>
+                            <td>{:config('os.version')} <a href="javascript:void(0)" onclick="upcheck()">检测更新</a></td>
+                        </tr>
+                        <tr>
+                            <td>UI版本</td>
+                            <td><a href="http://lyear.itshubao.com/v4" target="_blank">光年模板[Light Year Admin V4]</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>开源地址</td>
+                            <td><a href="https://github.com/yiyanyun">GITHUB</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">最近动态</div>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tbody>
+                        {volist name='data.dynamic' id='do'}
+                        <tr>
+                            <th scope="row">{$do.id}</th>
+                            <td>{$do.name}</td>
+                            <td>{$do.content}</td>
+                            <td>{$do.ip}</td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{include file='public/footer'/}
+
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        var $dashChartBarsCnt = jQuery('.js-chartjs-bars')[0].getContext('2d'),
+            $dashChartLinesCnt = jQuery('.js-chartjs-lines')[0].getContext('2d');
+
+        var $dashChartBarsData = {
+            labels: {$data.data_time},
+            datasets: [
+                {
+                    label: '留言统计',
+                    borderWidth: 1,
+                    borderColor: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: 'rgba(51, 202, 185, 0.5)',
+                    hoverBackgroundColor: "rgba(51, 202, 185, 0.7)",
+                    hoverBorderColor: "rgba(0, 0, 0, 0)",
+                    data: {$data.msg_total}
+                }
+            ]
+        };
+        var $dashChartLinesData = {
+            labels: {$data.data_time},
+            datasets: [
+                {
+                    label: '访问统计',
+                    data: {$data.visit_total},
+                    borderColor: '#358ed7',
+                    backgroundColor: 'rgba(53, 142, 215, 0.175)',
+                    borderWidth: 1,
+                    fill: false,
+                    lineTension: 0.5
+                }
+            ]
+        };
+
+        new Chart($dashChartBarsCnt, {
+            type: 'bar',
+            data: $dashChartBarsData
+        });
+
+        var myLineChart = new Chart($dashChartLinesCnt, {
+            type: 'line',
+            data: $dashChartLinesData,
+        });
+    });
+</script>
+
+
+<script>
+    function upcheck() {
+        $.ajax({
+            type: "POST",
+            url: "../../admin/index/update",
+            data: {
+                // 此处无需传递参数仅占位左右
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.code == 200) {
+                    showNotify(data.msg, 'success');
+                }else{
+                    showNotify(data.msg, 'danger');
+                }
+            }
+        });
+    }
+</script>
